@@ -4,7 +4,7 @@ import previousIcon from "./icons/previous.svg";
 import nextIcon from "./icons/next.svg";
 import playIcon from "./icons/play.svg";
 import pauseIcon from "./icons/pause.svg";
-import transition from "./gifs/static1.gif";
+import transition from "./transitionGifs/static1.gif";
 
 import Sound, { soundManager } from "react-sound";
 import sound from "./songs/song2.mp3";
@@ -16,8 +16,12 @@ function App() {
   const [currentSongIndex, setCurrentSongIndex] = useState(null);
   const [songList, setSongList] = useState([]);
   const [showTransition, setShowTransition] = useState(false);
+  const [transitionGifsList, setTransitionGifsList] = useState([]);
+  const [currentTransitionGifIndex, setCurrentTransitionGifIndex] = useState(null);
+
 
   const songs = require.context("./songs", true);
+  const transitionGifs = require.context("./transitionGifs", true);
 
   //sorun oluyor mu bak eğer olacaksa fonksiyon yaz ve birleştir
 
@@ -25,6 +29,14 @@ function App() {
     //songList state'e taşınacak. 2.si ne zaman songs değişirse songList update olmalı
     setSongList(songs.keys().map((song) => songs(song)));
   }, [songs]);
+
+  useEffect(() => {
+    setTransitionGifsList(
+      transitionGifs
+        .keys()
+        .map((transitionGif) => transitionGifs(transitionGif))
+    );
+  }, [transitionGifs]);
 
   useEffect(() => {
     if (window.soundManager) {
@@ -60,9 +72,25 @@ function App() {
     setCurrentSongIndex(randomIndex);
   };
 
+  const selectRandomTransitionGifs = () => {
+    const randomIndex = Math.floor(Math.random() * transitionGifsList.length);
+    setCurrentTransitionGifIndex(randomIndex);
+  };
+
+  const handleGifTransition = () => {
+    setShowTransition(true);
+    setTimeout(() => {
+      setShowTransition(false);
+    }, 250);
+  };
+
   return (
     <div className="App">
       <div className="gif-container">
+        <img
+          className={`transition-gif ${showTransition ? "show" : ""}`}
+          src={transitionGifsList[currentTransitionGifIndex]}
+        ></img>
         {currentGifIndex !== null && (
           <img className="gifs" src={gifs[currentGifIndex]} />
         )}
@@ -71,7 +99,15 @@ function App() {
       <div className="vignette"></div>
       <div className="dark"></div>
       <div className="button-container">
-        <button className="change-gif-btn previous-btn">
+        <button
+          className="change-gif-btn previous-btn"
+          onClick={() => {
+            handleGifTransition();
+            selectRandomGif();
+            selectRandomSongs();
+            selectRandomTransitionGifs()
+          }}
+        >
           <img className="img-btn" src={previousIcon} alt="Previous" />
         </button>
 
@@ -102,8 +138,10 @@ function App() {
         <button
           className="change-gif-btn next-btn"
           onClick={() => {
+            handleGifTransition();
             selectRandomGif();
             selectRandomSongs();
+            selectRandomTransitionGifs()
           }}
         >
           <img className="img-btn" src={nextIcon} alt="Next" />
