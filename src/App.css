@@ -21,6 +21,21 @@
   z-index: 2
 }
 
+.transition-gif {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0s ease-in-out;
+  pointer-events: none;
+  z-index: 999;   /* diğer gifin önünde olması için */
+}
+
+.transition-gif.show {
+  opacity: 1;
+}
 
 .change-gif-btn svg {}
 
