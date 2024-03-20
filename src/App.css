@@ -1,3 +1,6 @@
+@import url('https://fonts.cdnfonts.com/css/public-pixel');
+@import url('https://fonts.cdnfonts.com/css/devin-chavez-font');
+
 .App {
   display: flex;
   flex-direction: column;
@@ -7,6 +10,13 @@
 }
 
 .button-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.button {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -21,6 +31,46 @@
   z-index: 2
 }
 
+.text {
+  height: 50px;
+  width: 100%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+span {
+  font-family: 'Devin Chavez Font', sans-serif;
+  font-size: 10px;
+  color: white;
+}
+
+.pointer {
+  width: auto;
+  display: inline-block;
+}
+
+.green-box {
+  width: 6px;
+  height: 14px;
+  margin-right: 5px;
+  background-color: white;
+  display: inline-block;
+  pointer-events: none;
+  opacity: 1;
+}
+
+.green-box {
+  width: 6px;
+  height: 14px;
+  margin-right: 5px;
+  background-color: white;
+  display: inline-block;
+  pointer-events: none;
+  opacity: 1;
+}
+
 .transition-gif {
   position: absolute;
   top: 0;
@@ -30,12 +80,15 @@
   opacity: 0;
   transition: opacity 0s ease-in-out;
   pointer-events: none;
-  z-index: 999;   /* diğer gifin önünde olması için */
+  z-index: 999;
+  /* diğer gifin önünde olması için */
 }
 
 .transition-gif.show {
   opacity: 1;
 }
+
+
 
 .change-gif-btn svg {}
 

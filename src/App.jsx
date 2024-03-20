@@ -12,13 +12,15 @@ import sound from "./songs/song2.mp3";
 function App() {
   const [gifs, setGifs] = useState([]);
   const [currentGifIndex, setCurrentGifIndex] = useState(null);
+  const [quotes, setQuotes] = useState([]); //silinecek
+  const [currentQuotesIndex, setCurrentQuotesIndex] = useState(null); //silinecek
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(null);
   const [songList, setSongList] = useState([]);
   const [showTransition, setShowTransition] = useState(false);
   const [transitionGifsList, setTransitionGifsList] = useState([]);
-  const [currentTransitionGifIndex, setCurrentTransitionGifIndex] = useState(null);
-
+  const [currentTransitionGifIndex, setCurrentTransitionGifIndex] =
+    useState(null);
 
   const songs = require.context("./songs", true);
   const transitionGifs = require.context("./transitionGifs", true);
@@ -62,6 +64,34 @@ function App() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    //silinecek
+    const fetchData = async () => {
+      try {
+        const response = await fetch("./quotes.json");
+        if (!response.ok) {
+          throw new Error("error: " + response.status);
+        }
+        const data = await response.json();
+        setQuotes(data.quotes);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const MINUTE_MS = 12000;
+
+  useEffect(() => {
+    //silinecek
+    const interval = setInterval(() => {
+      selectRandomQuotes();
+    }, MINUTE_MS);
+
+    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+  }, []);
+
   const selectRandomGif = (length) => {
     const randomIndex = Math.floor(Math.random() * (length || gifs.length));
     setCurrentGifIndex(randomIndex);
@@ -75,6 +105,12 @@ function App() {
   const selectRandomTransitionGifs = () => {
     const randomIndex = Math.floor(Math.random() * transitionGifsList.length);
     setCurrentTransitionGifIndex(randomIndex);
+  };
+
+  const selectRandomQuotes = () => {
+    //silinecek
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    setCurrentQuotesIndex(randomIndex);
   };
 
   const handleGifTransition = () => {
@@ -99,54 +135,65 @@ function App() {
       <div className="vignette"></div>
       <div className="dark"></div>
       <div className="button-container">
-        <button
-          className="change-gif-btn previous-btn"
-          onClick={() => {
-            handleGifTransition();
-            selectRandomGif();
-            selectRandomSongs();
-            selectRandomTransitionGifs()
-          }}
-        >
-          <img className="img-btn" src={previousIcon} alt="Previous" />
-        </button>
+        <div className="text">
+          <span>{quotes[currentQuotesIndex]}</span>{" "}
+          {/*currentQuotesIndex yerine currentQuote*/}
+        </div>
+        <div className="button">
+          <button
+            className="change-gif-btn previous-btn"
+            onClick={() => {
+              handleGifTransition();
+              selectRandomGif();
+              selectRandomSongs();
+              selectRandomTransitionGifs();
+            }}
+          >
+            <img className="img-btn" src={previousIcon} alt="Previous" />
+          </button>
 
-        {isPlaying ? (
-          <>
-            <button
-              className="change-gif-btn pause-btn"
-              onClick={() => {
-                setIsPlaying(false);
-              }}
-            >
-              <img className="img-btn" src={pauseIcon} alt="Play" />
-            </button>
-          </>
-        ) : (
-          <>
-            <button
-              className="change-gif-btn play-btn"
-              onClick={() => {
-                setIsPlaying(true);
-                selectRandomSongs();
-              }}
-            >
-              <img className="img-btn" src={playIcon} alt="Play" />
-            </button>
-          </>
-        )}
-        <button
-          className="change-gif-btn next-btn"
-          onClick={() => {
-            handleGifTransition();
-            selectRandomGif();
-            selectRandomSongs();
-            selectRandomTransitionGifs()
-          }}
-        >
-          <img className="img-btn" src={nextIcon} alt="Next" />
-        </button>
+          {isPlaying ? (
+            <>
+              <button
+                className="change-gif-btn pause-btn"
+                onClick={() => {
+                  setIsPlaying(false);
+                }}
+              >
+                <img className="img-btn" src={pauseIcon} alt="Play" />
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="change-gif-btn play-btn"
+                onClick={() => {
+                  setIsPlaying(true);
+                  selectRandomSongs();
+                }}
+              >
+                <img className="img-btn" src={playIcon} alt="Play" />
+              </button>
+            </>
+          )}
+          <button
+            className="change-gif-btn next-btn"
+            onClick={() => {
+              handleGifTransition();
+              selectRandomGif();
+              selectRandomSongs();
+              selectRandomTransitionGifs();
+            }}
+          >
+            <img className="img-btn" src={nextIcon} alt="Next" />
+          </button>
+          <div className="pointer">
+            <div className="green-box"></div>
+            <div className="green-box" ></div>
+          </div>
+        </div>
       </div>
+
       <Sound
         url={songList[currentSongIndex]}
         playStatus={isPlaying ? Sound.status.PLAYING : Sound.status.PAUSED}
