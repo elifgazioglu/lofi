@@ -28,7 +28,7 @@
   background-color: transparent;
   border: none;
   cursor: pointer;
-  z-index: 2
+  z-index: 2;
 }
 
 .text {
@@ -53,22 +53,26 @@ span {
 
 .green-box {
   width: 6px;
-  height: 14px;
+  height: 20px;
   margin-right: 5px;
   background-color: white;
   display: inline-block;
-  pointer-events: none;
+  pointer-events: auto;
+  opacity: 0.5;
+}
+
+.green-box.active-box{
+  width: 6px;
+  height: 20px;
+  margin-right: 5px;
+  background-color: white;
+  display: inline-block;
+  pointer-events: auto;
   opacity: 1;
 }
 
-.green-box {
-  width: 6px;
-  height: 14px;
-  margin-right: 5px;
-  background-color: white;
-  display: inline-block;
-  pointer-events: none;
-  opacity: 1;
+button, select, .pointer {
+  cursor: url(images/cursors/pointer.svg), pointer !important;
 }
 
 .transition-gif {
