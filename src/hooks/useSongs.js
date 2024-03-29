@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const useSongs = () => {
   const [currentSongIndex, setCurrentSongIndex] = useState(null);
@@ -7,7 +7,6 @@ const useSongs = () => {
   const songs = require.context("../songs", true);
 
   useEffect(() => {
-    //songList state'e taşınacak. 2.si ne zaman songs değişirse songList update olmalı
     setSongList(songs.keys().map((song) => songs(song)));
   }, [songs]);
 
