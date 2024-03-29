@@ -49,25 +49,24 @@ span {
 .pointer {
   width: auto;
   display: inline-block;
+  z-index: 12;
+}
+
+.green-box-container{
+  padding-right: 5px;
+  display: inline-block;
+
 }
 
 .green-box {
   width: 6px;
-  height: 20px;
-  margin-right: 5px;
+  height: 16px;
   background-color: white;
-  display: inline-block;
   pointer-events: auto;
   opacity: 0.5;
 }
 
 .green-box.active-box{
-  width: 6px;
-  height: 20px;
-  margin-right: 5px;
-  background-color: white;
-  display: inline-block;
-  pointer-events: auto;
   opacity: 1;
 }
 
