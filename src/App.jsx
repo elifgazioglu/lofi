@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import "./App.css";
 import previousIcon from "./icons/previous.svg";
 import nextIcon from "./icons/next.svg";
@@ -6,63 +6,32 @@ import playIcon from "./icons/play.svg";
 import pauseIcon from "./icons/pause.svg";
 import useQuotes from "./hooks/useQuotes";
 import useSongs from "./hooks/useSongs";
-import useVolume from "./hooks/useVolume"
-import useGifs from "./hooks/useGifs"
-import Sound, { soundManager } from "react-sound";
+import useVolume from "./hooks/useVolume";
+import useGifs from "./hooks/useGifs";
+import useTransitionGifs from "./hooks/useTransitionGifs";
+import Music from "./Music";
 
 function App() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [showTransition, setShowTransition] = useState(false);
-  const [transitionGifsList, setTransitionGifsList] = useState([]);
-  const [currentTransitionGifIndex, setCurrentTransitionGifIndex] =
-    useState(null);
-
   const { currentQuote } = useQuotes();
   const { currentSong, selectRandomSongs } = useSongs();
-  const { currentGif, currentGifIndex ,selectRandomGif} = useGifs();
-  const {volume, renderVolumeControl} = useVolume();
-  const transitionGifs = require.context("./transitionGifs", true);
-
-  //volume her değiştiğinde yeni volume değerini storage'a yaz. sayfa ilk yüklendiğinde storage'tan bu değeri oku
-  //storage'ta bu değer varsa volume'ü update et yoksa 4 kalacak
-
-  useEffect(() => {
-    setTransitionGifsList(
-      transitionGifs
-        .keys()
-        .map((transitionGif) => transitionGifs(transitionGif))
-    );
-  }, [transitionGifs]);
-
-  useEffect(() => {
-    if (window.soundManager) {
-      window.soundManager.setup({ debugMode: false });
-    }
-  }, [window.soundManager]); //window'un SpoundManager'ı ne zaman değişirse bu useEffect çalışacak
-
-
-  const selectRandomTransitionGifs = () => {
-    const randomIndex = Math.floor(Math.random() * transitionGifsList.length);
-    setCurrentTransitionGifIndex(randomIndex);
-  };
-
-  const handleGifTransition = () => {
-    setShowTransition(true);
-    setTimeout(() => {
-      setShowTransition(false);
-    }, 250);
-  };
+  const { currentGif, currentGifIndex, selectRandomGif } = useGifs();
+  const { volume, renderVolumeControl } = useVolume();
+  const {
+    currentTransitionGif,
+    handleGifTransition,
+    selectRandomTransitionGifs,
+    showTransition,
+  } = useTransitionGifs();
 
   return (
     <div className="App">
       <div className="gif-container">
         <img
           className={`transition-gif ${showTransition ? "show" : ""}`}
-          src={transitionGifsList[currentTransitionGifIndex]}
+          src={currentTransitionGif}
         />
-        {currentGifIndex !== null && (
-          <img className="gifs" src={currentGif} />
-        )}
+        {currentGifIndex !== null && <img className="gifs" src={currentGif} />}
       </div>
       <div className="crt-lines"></div>
       <div className="vignette"></div>
@@ -122,12 +91,11 @@ function App() {
           {renderVolumeControl()}
         </div>
       </div>
-      <Sound
-        url={currentSong}
-        playStatus={isPlaying ? Sound.status.PLAYING : Sound.status.PAUSED}
-        playFromPosition={300}
-        onFinishedPlaying={selectRandomSongs}
+      <Music
+        isPlaying={isPlaying}
         volume={volume}
+        currentSong={currentSong}
+        selectRandomSongs={selectRandomSongs}
       />
     </div>
   );
